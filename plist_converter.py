@@ -18,10 +18,15 @@ input = open(args.filename)
 data = plistlib.readPlist(input)
 input.close()
 
+if 'name' not in data:
+    subject=data['subjectID']
+else:
+    subject=data['name']
+
 # Report metadata and write out textfile of metadata
-print 'Processing subject '+ data['name'] + ' in study ' + data['studyID']
+print 'Processing subject '+ subject + ' in study ' + data['studyID']
 print 'Outputing metadata in text file'
-textfile = open(data['studyID']+data['name'] + '.txt','wb')
+textfile = open(data['studyID']+ subject + '.txt','wb')
 for item in data.keys():
 	if item == 'logData':
 		pass
@@ -34,7 +39,7 @@ textfile.close()
 
 # Write out new CSV file
 print 'Outputing CSV file'
-writer = csv.writer(open(data['studyID']+data['name'] + '.csv', 'wb'))
+writer = csv.writer(open(data['studyID']+subject + '.csv', 'wb'))
 writer.writerow(data['logData'][0].keys())
 for trials in data['logData']:
 	writer.writerow(trials.values())
