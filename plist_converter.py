@@ -18,10 +18,12 @@ input = open(args.filename)
 data = plistlib.readPlist(input)
 input.close()
 
-if 'name' not in data:
+if 'subjectID' in data:
     subject=data['subjectID']
-else:
+elif 'name' in data:
     subject=data['name']
+else:
+    print " Error: neither key 'name' nor 'subjectID' in PLIST"
 
 # Report metadata and write out textfile of metadata
 print 'Processing subject '+ subject + ' in study ' + data['studyID']
@@ -40,6 +42,14 @@ textfile.close()
 # Write out new CSV file
 print 'Outputing CSV file'
 writer = csv.writer(open(data['studyID']+subject + '.csv', 'wb'))
-writer.writerow(data['logData'][0].keys())
-for trials in data['logData']:
-	writer.writerow(trials.values())
+
+if "data" in data:
+    writer.writerow(data['data'][0].keys())
+    for trials in data['data']:
+        writer.writerow(trials.values())
+elif "logData" in data:
+    writer.writerow(data['logData'][0].keys())
+    for trials in data['logData']:
+        writer.writerow(trials.values())
+else:
+    print "Error: Neither key 'data' nor key 'logData' in PLIST"
